@@ -74,7 +74,7 @@ router.post('/newTask', (req, res, next) => {
             description : req.body.description,
             ownerID : req.body.ownerID,
             status : req.body.status,
-            creationDate : formatted,
+            creationDate : new Date(),
             todoDate : req.body.todoDate,
             taskUser : req.body.users
         }, (err, result) => {
