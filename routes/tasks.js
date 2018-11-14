@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-// var dateTime = require('node-datetime');
 var mongo = require('mongodb');
 var connectionURL = 'mongodb://ahmad:A16248Ba@ds161183.mlab.com:61183/ishada_db';
 var mongoose = require('mongoose');
@@ -30,7 +29,7 @@ router.get('/', (req, res, next) => {
 
     });
 });
-/*
+
 router.get('/:id', (req, res, next) => {
     mongoose.connect(connectionURL, { useNewUrlParser: true }, (err, db) => {
         if (err) {
@@ -68,9 +67,6 @@ router.post('/newTask', (req, res, next) => {
             });
             return;
         }
-
-        var dt = dateTime.create();
-        var formatted = dt.format('Y-m-d H:M:S');
 
         var taskColl = db.collection('tasks');
         taskColl.insertOne({
@@ -170,5 +166,5 @@ router.post('/changeStatus', (req, res, next) => {
 });
     });
 });
-*/
+
 module.exports = router;
