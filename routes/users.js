@@ -1,83 +1,103 @@
 var express = require('express');
 var router = express.Router();
-
-const User = require('../models/user');
+var connectionURL = require('../models/global').connectionString;
+var mongoose = require('mongoose');
 
 router.get('/', (req, res, next) => {
-  User.find({}, (err, users) => {
+  mongoose.connect(connectionURL, { useNewUrlParser: true }, function (err, db) {
     if (err) {
       res.status(400).json({
-        "message" : "Error"
+        "connection error" : err.message
       });
       return;
     }
-    res.status(200).send(users);
+    var userColl = db.collection('users');
+    userColl.find({}, {}).toArray((err, users) => {
+      if (err) {
+        res.status(400).json({
+          "message" : "Error"
+        });
+        return;
+      }
+      res.status(200).send(users);
+    });
   });
 });
 
 router.post('/signUp', (req, res, next) => {
-
-  User.find({ username : req.body.username }, (err, data) => {
+  mongoose.connect(connectionURL, { useNewUrlParser: true }, function (err, db) {
     if (err) {
-      res.status(400).send({
-        "message" : err.message
+      res.status(400).json({
+        "connection error" : err.message
       });
       return;
     }
-    if (data != 0) {
-      res.send({
-        "message" : "Already registered!"
-      });
-      return;
-    }
+    var userColl = db.collection('users');
+    userColl.find({}, {}).toArray((err, users) => {
+      if (err) {
+        res.status(400).json({
+          "message" : "Error"
+        });
+        return;
+      }
+      if (users.length > 0) {
+        res.status(200).json({
+          "message" : "Already registered!"
+        });
+        return;
+      }
 
-    new User({
-      fullName : req.body.fullName,
-      username : req.body.username,
-      password : req.body.password,
-      email  : req.body.email,
-      phone : req.body.phone,
-      departmentID : req.body.departmentID
-    })
-    .save()
-    .then(result => {
-      res.json({
-        message : "Welcome " + result.fullName,
+      userColl.insertOne({
+        fullName : req.body.fullName,
+        username : req.body.username,
+        password : req.body.password,
+        email  : req.body.email,
+        phone : req.body.phone,
+        departmentID : req.body.departmentID
+      }, (err, result) => {
+        if (err) { 
+          res.status(400).json({
+            "message" : err.message
+          });
+        } else {
+          res.json({
+            "message" : "Welcome " + req.body.fullName
+          });
+        }
       });
-    })
-    .catch(err => {
-      res.json({
-        message : err.message
-      });
-    });
 
+    });    
 
   });
 });
 
 router.post('/signIn', (req, res, next) => {
-  User.find({ username : req.body.username , password : req.body.password }, (err, user) => {
+  mongoose.connect(connectionURL, { useNewUrlParser: true }, function (err, db) {
     if (err) {
       res.status(400).json({
-        "message" : err.message
+        "connection error" : err.message
       });
-      return
+      return;
     }
-    if (user.length == 0) {
-      User.find({ username : req.body.username }, (err, user) => {
-        if (user.length == 0) {
-          res.json({
-            "message" : "Not Registered!"
-          });
-        } else {
-          res.json({
-            "message" : "Incorrect Password"
-          });
-        }
-      });
-    } else {
-      res.json(user[0]);
-    }
+
+    var userColl = db.collection('users');
+    userColl.find({ username : req.body.username, password : req.body.password })
+      .toArray((err, users) => {
+      if (err) {
+        res.status(400).json({
+          "message" : err.message
+        });
+        return;
+      }
+      if (users.length == 0) {
+        res.json({
+          "message" : "Not Registered!"
+        });
+        return;
+      }
+      res.send(users[0]);
+    });
+
   });
 });
 

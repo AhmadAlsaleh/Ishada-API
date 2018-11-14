@@ -1,93 +1,173 @@
 var express = require('express');
 var router = express.Router();
 var dateTime = require('node-datetime');
+var mongo = require('mongodb');
 
-const Task = require('../models/task');
+var connectionURL = require('../models/global').connectionString;
+var mongoose = require('mongoose');
 
 router.get('/', (req, res, next) => {
-    Task.find({}, (err, tasks) => {
-        if (err) {
-            res.status(400).json({
-                "message" : "Error"
-            });
-            return;
-        }
-        res.send(tasks);
-    });
-});
-
-router.get('/:id', (req, res, next) => {
-    Task.findById(req.params.id, (err, task) => {
+    mongoose.connect(connectionURL, { useNewUrlParser: true }, (err, db) => {
         if (err) {
             res.status(400).json({
                 "message" : err.message
             });
-        } else {
-            res.send(task);
+            return;
         }
+
+        var taskColl = db.collection('tasks');
+        taskColl.find({}).toArray((err, tasks) => {
+            if (err) {
+                res.status(400).json({
+                    "message" : err.message
+                });
+                return;
+            }
+
+            res.send(tasks);
+
+        });
+
+    });
+});
+
+router.get('/:id', (req, res, next) => {
+    mongoose.connect(connectionURL, { useNewUrlParser: true }, (err, db) => {
+        if (err) {
+            res.status(400).json({
+                "message" : err.message
+            });
+            return;
+        }
+        var o_id = new mongo.ObjectID(req.params.id);
+
+        var taskColl = db.collection('tasks');
+        taskColl.findOne({ _id : o_id }, (err, task) => {
+            if (err) {
+                res.status(400).json({
+                    "message" : err.message
+                });
+                return;
+            }
+            if (task == null) {
+                res.json({
+                    "message" : "No Task"
+                });
+                return;
+            }
+            res.send(task);
+        });
     });
 });
 
 router.post('/newTask', (req, res, next) => {
-    var dt = dateTime.create();
-    var formatted = dt.format('Y-m-d H:M:S');
-    new Task({
-        title : req.body.title,
-        description : req.body.description,
-        ownerID : req.body.ownerID,
-        status : req.body.status,
-        creationDate : formatted,
-        todoDate : req.body.todoDate,
-        taskUser : req.body.users
-    })
-    .save()
-    .then(result => {
-        res.json({
-            "message" : "Task Created!",
-            "taskID" : result.taskID
-        });
-    })
-    .catch(err => {
-        res.status(400).json({
-            "message" : "error"
+    mongoose.connect(connectionURL, { useNewUrlParser: true }, (err, db) => {
+        if (err) {
+            res.status(400).json({
+                "message" : err.message
+            });
+            return;
+        }
+
+        var dt = dateTime.create();
+        var formatted = dt.format('Y-m-d H:M:S');
+
+        var taskColl = db.collection('tasks');
+        taskColl.insertOne({
+            title : req.body.title,
+            description : req.body.description,
+            ownerID : req.body.ownerID,
+            status : req.body.status,
+            creationDate : formatted,
+            todoDate : req.body.todoDate,
+            taskUser : req.body.users
+        }, (err, result) => {
+            if (err) {
+                res.status(400).json({
+                    "message" : err.message
+                });
+                return;
+            }
+            
+            res.json({
+                "message" : "Task Created!",
+                "taskID" : result.taskID
+            });
         });
     });
 });
 
 router.delete('/deleteTask/:id', (req, res, next) => {
-    Task.deleteOne({_id : req.params.id }, (err) => {
+    mongoose.connect(connectionURL, { useNewUrlParser: true }, (err, db) => {
         if (err) {
             res.status(400).json({
                 "message" : err.message
             });
-            return
+            return;
         }
-        res.json({
-            "message" : "task deleted!"
+        var o_id = new mongo.ObjectID(req.params.id);
+
+        var taskColl = db.collection('tasks');
+        taskColl.deleteOne({ _id : o_id }, (err, result) => {
+            if (err) {
+                res.status(400).json({
+                    "message" : err.message
+                });
+                return;
+            }
+
+            res.json({
+                "message" : "Task Deleted!",
+                "taskID" : o_id
+            });
+
         });
-    })
+
+    });
 });
 
 router.post('/assignTask', (req, res, next) => {
-    Task.update({ _id : req.body.taskID }, { taskUser : req.body.users } , { multi: true },
-        (err, data) => {
+    mongoose.connect(connectionURL, { useNewUrlParser: true }, (err, db) => {
+        if (err) {
+            res.status(400).json({
+                "message" : err.message
+            });
+            return;
+        }
+        var o_id = new mongo.ObjectID(req.body.taskID);
+
+        var taskColl = db.collection('tasks');
+        taskColl.update({ _id : o_id }, 
+            { $set : {taskUser : req.body.users } }, 
+            (err, data) => {
             if (err) {
                 res.send(err.message);
                 return;
             }
             res.send(data);
         });
+    });
 });
 
 router.post('/changeStatus', (req, res, next) => {
-    Task.update({ _id : req.body.taskID } , { status : req.body.status }, (err, data) => {
+    mongoose.connect(connectionURL, { useNewUrlParser: true }, (err, db) => {
         if (err) {
             res.status(400).json({
-		"message" : err
-	});
+                "message" : err.message
+            });
             return;
         }
-        res.send(data);
+        var o_id = new mongo.ObjectID(req.body.taskID);
+        var taskColl = db.collection('tasks');
+        taskColl.update({ _id : o_id } , { $set : { status : req.body.status } }, (err, data) => {
+            if (err) {
+                res.status(400).json({
+            "message" : err
+        });
+                return;
+    }
+    res.send(data);
+});
     });
 });
 
