@@ -30,7 +30,7 @@ router.get('/', (req, res, next) => {
 
     });
 });
-
+/*
 router.get('/:id', (req, res, next) => {
     mongoose.connect(connectionURL, { useNewUrlParser: true }, (err, db) => {
         if (err) {
@@ -170,5 +170,5 @@ router.post('/changeStatus', (req, res, next) => {
 });
     });
 });
-
+*/
 module.exports = router;
