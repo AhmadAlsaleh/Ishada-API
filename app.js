@@ -8,7 +8,7 @@ var localURL = 'mongodb://127.0.0.1:27017/ishada_db';
 var remoteURL = 'mongodb://1b633cd675364aa601c784178bc3d810:A16248Ba@10b.mongo.evennode.com:27017/1b633cd675364aa601c784178bc3d810';
 var remoteURLMONGO = 'mongodb://alsaleh:A16248Ba.AlKtf@cluster0-ndjag.mongodb.net/ishada_db';
 
-
+/*
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://ahmad:A16248Ba@ds161183.mlab.com:61183/ishada_db', { useNewUrlParser: true });
 var db = mongoose.connection;
@@ -19,9 +19,9 @@ db.on('error', function() {
 db.once('open', function() {
   console.log('connected :)');
 });
-
-
+*/
 var indexRouter = require('./routes/index');
+var testRouter = require('./routes/tests');
 /*
 var usersRouter = require('./routes/users');
 var tasksRouter = require('./routes/tasks');
@@ -39,6 +39,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/tests', testRouter);
 /*
 app.use('/users', usersRouter);
 app.use('/tasks', tasksRouter);
