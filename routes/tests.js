@@ -9,14 +9,12 @@ router.get('/', function(req, res, next) {
             res.send(err.message);
             return;
         }
-
-        collection.insert({"basicInfo": {
-            "title": "test",
-            "status": "new"
-        }
+    var collection = db.collection('test');
+    collection.insert({"basicInfo": {
+        "title": "test",
+        "status": "new"
+    }
     });
-
-        var collection = db.collection('test');
         collection.find({}, {}).toArray(function(err, data) {
             res.send(data);
         });
