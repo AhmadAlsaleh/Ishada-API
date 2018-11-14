@@ -1,7 +1,5 @@
 var express = require('express');
 var router = express.Router();
-
-var mongodb = require('mongodb').MongoClient;
 var connectionURL = 'mongodb://ahmad:A16248Ba@ds161183.mlab.com:61183/ishada_db'
 var mongoose = require('mongoose');
 
@@ -11,9 +9,16 @@ router.get('/', function(req, res, next) {
             res.send(err.message);
             return;
         }
-        var collection = db.collection('tests');
-        collection.findOne({}, function(err, result) {
-            res.send(result);
+
+        collection.insert({"basicInfo": {
+            "title": "test",
+            "status": "new"
+        }
+    });
+
+        var collection = db.collection('test');
+        collection.find({}, {}).toArray(function(err, data) {
+            res.send(data);
         });
     });
 });
