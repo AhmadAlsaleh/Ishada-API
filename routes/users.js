@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var connectionURL = 'mongodb://ahmad:A16248Ba@ds161183.mlab.com:61183/ishada_db';
 var mongoose = require('mongoose');
+var mongo = require('mongodb');
+
 
 router.get('/', (req, res, next) => {
   mongoose.connect(connectionURL, { useNewUrlParser: true }, function (err, db) {
@@ -96,6 +98,35 @@ router.post('/signIn', (req, res, next) => {
         return;
       }
       res.send(users[0]);
+    });
+
+  });
+});
+
+router.post('/getUsersByIDs', (req, res, next) => {
+  mongoose.connect(connectionURL, { useNewUrlParser: true }, function (err, db) {
+    if (err) {
+      res.status(400).json({
+        "connection error" : err.message
+      });
+      return;
+    }
+    var reqUsers = [];
+    for (u in req.body.users) {
+      reqUsers.push(new mongo.ObjectID(req.body.users[u]));
+    }
+
+    var userColl = db.collection('users');
+    userColl.find({ _id: { $in: reqUsers } }).toArray((err, users) => {
+      if (err) {
+        res.status(400).json({
+          "message" : err.message
+        });
+        return;
+      }
+
+      res.send(users);
+
     });
 
   });
