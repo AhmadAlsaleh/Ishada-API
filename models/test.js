@@ -5,4 +5,4 @@ const test = mongoose.Schema({
     status: Number
 });
 
-module.exports = mongoose.model('Test', test);
+module.exports = mongoose.model('TestT', test);
