@@ -35,7 +35,7 @@ router.post('/signUp', (req, res, next) => {
       return;
     }
     var userColl = db.collection('users');
-    userColl.find({}, {}).toArray((err, users) => {
+    userColl.find({ username : req.body.username }, {}).toArray((err, users) => {
       if (err) {
         res.status(400).json({
           "message" : "Error"
