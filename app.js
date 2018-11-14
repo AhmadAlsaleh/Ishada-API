@@ -4,10 +4,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var localURL = 'mongodb://127.0.0.1:27017/ishada_db';
-var remoteURL = 'mongodb://1b633cd675364aa601c784178bc3d810:A16248Ba@10b.mongo.evennode.com:27017/1b633cd675364aa601c784178bc3d810';
-var remoteURLMONGO = 'mongodb://alsaleh:A16248Ba.AlKtf@cluster0-ndjag.mongodb.net/ishada_db';
-
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var tasksRouter = require('./routes/tasks');

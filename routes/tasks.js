@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
+
 var dateTime = require('node-datetime');
 var mongo = require('mongodb');
-
 var connectionURL = require('../models/global').connectionString;
 var mongoose = require('mongoose');
 
