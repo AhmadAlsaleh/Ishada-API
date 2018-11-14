@@ -125,7 +125,9 @@ router.post('/getUsersByIDs', (req, res, next) => {
         return;
       }
 
-      res.send(users);
+      res.json({
+        "users" : users
+      });
 
     });
 
