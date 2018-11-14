@@ -4,6 +4,16 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var connectionURL = 'mongodb://ahmad:A16248Ba@ds161183.mlab.com:61183/ishada_db';
+var mongoose = require('mongoose');
+mongoose.connect(connectionURL, { useNewUrlParser: true }, (err) => {
+  if (err) {
+    console.log(err.message);
+  } else {
+    console.log('connected :)');
+  }
+});
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var tasksRouter = require('./routes/tasks');
