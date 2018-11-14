@@ -3,7 +3,7 @@ var router = express.Router();
 
 var dateTime = require('node-datetime');
 var mongo = require('mongodb');
-var connectionURL = require('../models/global').connectionString;
+var connectionURL = 'mongodb://ahmad:A16248Ba@ds161183.mlab.com:61183/ishada_db';
 var mongoose = require('mongoose');
 
 router.get('/', (req, res, next) => {

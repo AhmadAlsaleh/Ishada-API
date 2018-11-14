@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var connectionURL = require('../models/global').connectionString;
+var connectionURL = 'mongodb://ahmad:A16248Ba@ds161183.mlab.com:61183/ishada_db';
 var mongoose = require('mongoose');
 
 router.get('/', (req, res, next) => {
