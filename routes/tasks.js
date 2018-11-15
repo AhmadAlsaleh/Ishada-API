@@ -134,7 +134,7 @@ router.post('/assignTask', (req, res, next) => {
 
         var taskColl = db.collection('tasks');
         taskColl.update({ _id : o_id }, 
-            { $set : {taskUser : req.body.users } }, 
+            { $set : { taskUser : req.body.users, status : "TODO" } }, 
             (err, data) => {
             if (err) {
                 res.send(err.message);
