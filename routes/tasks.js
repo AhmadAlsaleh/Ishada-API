@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var mongo = require('mongodb');
-var connectionURL = 'mongodb://ahmad:A16248Ba@ds161183.mlab.com:61183/ishada_db';
+var connectionURL = require('../models/globals').connectionURL;
 var mongoose = require('mongoose');
 
 router.get('/', (req, res, next) => {

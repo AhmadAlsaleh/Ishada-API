@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var base64Img = require('base64-img');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {  

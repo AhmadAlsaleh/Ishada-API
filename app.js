@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var connectionURL = 'mongodb://ahmad:A16248Ba@ds161183.mlab.com:61183/ishada_db';
+var connectionURL = require('./models/globals').connectionURL;
 var mongoose = require('mongoose');
 mongoose.connect(connectionURL, { useNewUrlParser: true }, (err) => {
   if (err) {
